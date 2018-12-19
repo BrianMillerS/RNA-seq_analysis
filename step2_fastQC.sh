@@ -7,9 +7,9 @@
 ## OUTPUTS:
 # A variety of QC reports, but look at 'multiqc_report.html' to see a single report for all samples
 
-## DEPENDENCIES:
-# fastQC (v0.11.5)
-# multiQC (v1.1)
+## DEPENDENCIES (ensure that the following executables are in your $PATH):
+# fastQC
+# multiQC
 
 # runs fastQC
 mkdir $1

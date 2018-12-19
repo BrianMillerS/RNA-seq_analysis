@@ -1,12 +1,12 @@
 #!/bin/bash
 # This script runs hisat2 and featurecounts on a set of fastq files to generate counts files
 
-## USAGE: ./Full_Alignment_and_Counting.sh <counts_output_reverse_filename.txt> <counts_output_forward_filename.txt> <genome.fasta> <annotation_file.gtf> <sam_add-on>
-# $1 <counts_output_reverse_filename.txt> is the name of a file that will be created by featureCounts containing the counts for all samples for every gene using the -s 2 parameter
-# $2 <counts_output_forward_filename.txt> is the name of a file that will be created by featureCounts containing the counts for all samples for every gene using the -s 1 parameter
-# $3 <genome.fasta> is the genome filename to be used
-# $4 <annotation_file.gtf> is the annotation filename (in gtf format) to be used
-# $5 <sam_add-on> is the word that you want added to the end of the .sam filenames (e.g. if <sam add-on> = "Couvillion" then all sam files will have a *Couvillion.sam ending)
+## USAGE: ./step3_alignment_and_counting.sh [counts_output_reverse_filename.txt] [counts_output_forward_filename.txt] [genome.fasta] [annotation_file.gtf] [sam_add-on]
+# $1 [counts_output_reverse_filename.txt] is the name of a file that will be created by featureCounts containing the counts for all samples for every gene using the -s 2 parameter
+# $2 [counts_output_forward_filename.txt] is the name of a file that will be created by featureCounts containing the counts for all samples for every gene using the -s 1 parameter
+# $3 [genome.fasta] is the genome filename to be used
+# $4 [annotation_file.gtf] is the annotation filename (in gtf format) to be used
+# $5 [sam_add-on] is the word that you want added to the end of the .sam filenames (e.g. if [sam add-on] = "Couvillion" then all sam files will have a *Couvillion.sam ending)
 
 ## INPUTS:
 # - refrence genome in .fasta format
@@ -15,8 +15,8 @@
 
 ## OUTPUTS:
 # Alignment files in .sam format
-# A featurecounts counts txt file with reverse counts for every annotaion (gene if transcriptome)
-# A featurecounts counts txt file with forward counts for every annotaion (gene if transcriptome)
+# A featurecounts counts txt file with reverse counts for every annotaion
+# A featurecounts counts txt file with forward counts for every annotaion
 
 ## DEPENDENCIES:
 # hisat2 (2.1.0)
@@ -42,7 +42,7 @@ echo "STEP 2: Creating index files"
 hisat2-build -f --ss splice_sites.txt --exon exons.txt $3 ht2_ref
 echo
 echo "STEP 3: Running Hisat2 on each fastq file, output is a .sam file for each fastq"
-for fastq_file in /media/pollardlab/POLLARDLAB3/RNAi_Project_T_thermophila_RNA-seq/Analysis_V2/STEP1_Original_files_and_QC/31_barcode_quality/trimmCleaned_fastq_files/*.fastq; do
+for fastq_file in *.fastq; do
 	file_name=$(echo $fastq_file | cut -d'.' -f 1)  # takes the file name root from each fastq_file (e.g. bob/hello.fastq -> bob/hello)
 	file_name=$(basename $file_name)  # takes the file name root from each ffile and excludes the rest of the path (e.g. bob/hello -> hello)
 	echo
@@ -77,7 +77,7 @@ echo "STEP 4: Running featureCounts using [-s 2] on each sam file, output is the
 cd sam_files
 featureCounts -s 2 -t exon -g gene_name -a $4 -o $1 *.sam
 # explaining the above line of code:
-# [-s 2] tells featureCounts to count on the reverse strand (NOTE this is not redundant to the "R" during)
+# [-s 2] tells featureCounts to count on the reverse strand
 # [-t exon] tells featureCounts the feature type that is being counted 
 # [-g gene_name] tells featureCounts to report the counts using this name identifier from the gtf file (in every case it is 'gene_name' eventhough our custom annotations are not genes)
 # [-a $4] gives featureCounts the annotation set, gtf file

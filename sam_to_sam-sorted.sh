@@ -1,6 +1,6 @@
 #!/bin/bash
-#sorts all sam files in curdir
-#sorted by coordinates
+# sorts all sam files in curdir
+# sorted by coordinates
 
 for sam_file in *.sam; do
 	#takes the file name root from each sam_file (e.g. hello.sam -> hello_sorted.sam)
